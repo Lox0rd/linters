@@ -70,10 +70,12 @@ High: 2
 Files skipped (0):
 
 
-⸻
+```
 
-2) Go (golangci-lint)
+## 2) Go (golangci-lint)
 
+
+```bash
 user@arch ~/D/B/L/go [1]> golangci-lint run
 
 WARN [config_reader] The configuration option run.skip-files is deprecated, please use issues.exclude-files.
@@ -84,10 +86,12 @@ linter.go:46:1: File is not properly formatted (gofmt)
 ^
 
 
-⸻
+```
 
-3) C (clang-tidy)
+## 3) C (clang-tidy)
 
+
+```bash
 user@arch ~/D/B/L/C> clang-tidy linter.c -- -I.
 
 1 warning generated.
@@ -98,3 +102,5 @@ user@arch ~/D/B/L/C> clang-tidy linter.c -- -I.
 /home/user/Desktop/BRPO/Linters/C/linter.c:6:9: note: Call to function 'fprintf' is insecure as it does not provide security checks introduced in the C11 standard. Replace with analogous functions that support length arguments or provides boundary checks such as 'fprintf_s' in case of C11
 6 |         fprintf(stderr, "Memory allocation failed\n");
   |         ^~~~~
+  
+```
