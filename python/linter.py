@@ -1,24 +1,56 @@
-import os
-import subprocess
+from flask import Flask, request
 import sqlite3
-ADMIN_PASSWORD = "super_secret_password_123"
-def execute_user_command(user_input):
-    os.system(f"ls {user_input}")
-def get_user_by_id(user_id):
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-    query = f"SELECT * FROM users WHERE id = {user_id}"
-    cursor.execute(query)
-    result = cursor.fetchone()
-    conn.close()
-    return result
-def read_config_file():
-    with open("config.txt", "r") as f:
-        return f.read()
-if __name__ == "__main__":
-    user_input = input("Введите путь для ls: ")
-    execute_user_command(user_input)
+import os
 
-    user_id = input("Введите ID пользователя: ")
-    user = get_user_by_id(user_id)
-    print(f"Пользователь: {user}")
+app = Flask(__name__)
+
+DB_PATH = "users.db"
+
+
+def get_user(username, password):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+
+    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+    cursor.execute(query)
+
+    user = cursor.fetchone()
+    conn.close()
+    return user
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+
+    user = get_user(username, password)
+
+    if user:
+        return f"Welcome, {username}!"
+    else:
+        return "Invalid credentials", 401
+
+
+@app.route("/read_file", methods=["GET"])
+def read_file():
+    filename = request.args.get("filename")
+
+    filepath = os.path.join("files", filename)
+
+    try:
+        with open(filepath, "r") as f:
+            content = f.read()
+        return content
+    except Exception as e:
+
+        return str(e), 500
+
+
+if __name__ == "__main__":
+
+    app.run(debug=True)
+
+#http://127.0.0.1:5000/read_file?filename=test.txt
